@@ -3,7 +3,7 @@
 // These visitors normalize the SVG into the primitives from react-sketchapp:
 //
 
-import svgTypes from 'react-sketchapp/lib/components/Svg';
+import { Svg } from 'react-sketchapp';
 
 function toFirstUpper(str) {
   return str.charAt(0).toUpperCase() + str.substr(1);
@@ -15,7 +15,7 @@ function prefixNodeName(str) {
   return `Svg.${str}`;
 }
 function toScopedIdentifier(name) {
-  const knownTypes = Object.keys(svgTypes)
+  const knownTypes = Object.keys(Svg)
     .filter(n => n.charAt(0) !== n.charAt(0).toLowerCase());
   const lname = name.toLowerCase();
   const cname = toFirstUpper(lname);
