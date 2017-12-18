@@ -25,11 +25,18 @@ export default ({ types: t }) => ({
   visitor: {
     Program: {
       enter({ scope, node }, { file }) {
+        if (!scope.hasBinding('Svg')) {
+          const reactSketchAppImportDeclaration = t.importDeclaration([
+            t.importSpecifier(t.identifier('Svg'), t.identifier('Svg')),
+          ], t.stringLiteral('react-sketchapp'));
+          file.set('ensureReactSketchapp', () => { node.body.unshift(reactSketchAppImportDeclaration); });
+        } else {
+          file.set('ensureReactSketchapp', () => {});
+        }
         if (!scope.hasBinding('React')) {
           const reactImportDeclaration = t.importDeclaration([
             t.importDefaultSpecifier(t.identifier('React')),
           ], t.stringLiteral('react'));
-
           file.set('ensureReact', () => { node.body.unshift(reactImportDeclaration); });
         } else {
           file.set('ensureReact', () => {});
@@ -108,6 +115,7 @@ export default ({ types: t }) => ({
           path.replaceWith(svgReplacement);
         }
         file.get('ensureReact')();
+        file.get('ensureReactSketchapp')();
       }
     },
   },
