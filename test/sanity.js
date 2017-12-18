@@ -29,7 +29,7 @@ transformFile('test/fixtures/test.jsx', {
   if (err) throw err;
   assertReactImport(result);
   assertReactSketchappImport(result);
-  console.log('test/fixtures/test.jsx', result.code);
+  // console.log('test/fixtures/test.jsx', result.code);
 });
 
 transformFile('test/fixtures/test-no-react.jsx', {

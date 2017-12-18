@@ -5,6 +5,7 @@ import traverse from 'babel-traverse';
 import { parse } from 'babylon';
 import resolveFrom from 'resolve-from';
 
+import optimize from './optimize';
 import escapeBraces from './escapeBraces';
 import transformSvg from './transformSvg';
 import fileExistsWithCaseSync from './fileExistsWithCaseSync';
@@ -64,12 +65,15 @@ export default ({ types: t }) => ({
           throw new Error(`File path didn't match case of file on disk: ${svgPath}`);
         }
         const rawSource = readFileSync(svgPath, 'utf8');
+        const optimizedSource = state.opts.svgo === false
+          ? rawSource
+          : optimize(rawSource, state.opts.svgo);
 
-        const escapeSvgSource = escapeBraces(rawSource);
+        const escapeSvgSource = escapeBraces(optimizedSource);
 
         const parsedSvgAst = parse(escapeSvgSource, {
           sourceType: 'module',
-          plugins: ['jsx'],
+          plugins: ['jsx', 'dynamicImport', 'objectRestSpread'],
         });
 
         traverse(parsedSvgAst, transformSvg(t));
