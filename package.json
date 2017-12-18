@@ -7,7 +7,7 @@
     "test": "babel-node test/sanity.js",
     "build": "babel src --out-dir lib",
     "lint": "eslint src/",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
