@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-react-sketchapp-svg",
-  "version": "1.0.0-beta1",
+  "version": "1.0.0-beta2",
   "description": "A babel plugin that transforms SVG imports into react-sketchapp-compatible primitives.",
   "main": "lib/index.js",
   "scripts": {
