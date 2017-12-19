@@ -25,7 +25,6 @@ transformFile('test/fixtures/test.jsx', {
   presets: ['react'],
   plugins: [
     ['../../src/index', {
-      defaultWidth: 22,
       defaultHeight: 32,
     }],
   ],
@@ -33,7 +32,7 @@ transformFile('test/fixtures/test.jsx', {
   if (err) throw err;
   assertReactImport(result);
   assertReactSketchappImport(result);
-  console.log('test/fixtures/test.jsx\n\n%s\n\n', highlight(result.code));
+  // console.log('test/fixtures/test.jsx\n\n%s\n\n', highlight(result.code));
 });
 
 transformFile('test/fixtures/test-no-react.jsx', {

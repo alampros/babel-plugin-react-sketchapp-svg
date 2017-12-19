@@ -21,6 +21,17 @@ const buildSvgWithDefaults = template(`
 
 let ignoreRegex;
 
+function getDefaultDimensionOptionProperty(t, propVal) {
+  switch (typeof propVal) {
+    case 'string':
+      return t.stringLiteral(propVal);
+    case 'number':
+      return t.numericLiteral(propVal);
+      // no default
+  }
+  return t.stringLiteral('100%');
+}
+
 export default ({ types: t }) => ({
   visitor: {
     Program: {
@@ -87,10 +98,10 @@ export default ({ types: t }) => ({
 
         // Move props off of element and into defaultProps
         if (svgCode.openingElement.attributes.length > 1) {
-          const keepProps = [];
+          const keepProps = [t.jSXSpreadAttribute(t.identifier('props'))];
           const defaultProps = [
-            t.objectProperty(t.identifier('width'), t.numericLiteral(defaultWidth || 16)),
-            t.objectProperty(t.identifier('height'), t.numericLiteral(defaultHeight || 16)),
+            t.objectProperty(t.identifier('width'), getDefaultDimensionOptionProperty(t, defaultWidth)),
+            t.objectProperty(t.identifier('height'), getDefaultDimensionOptionProperty(t, defaultHeight)),
           ];
 
           svgCode.openingElement.attributes.forEach((prop) => {
