@@ -29,36 +29,42 @@ const knownTypes = [
   'TSpan',
 ];
 
+/**
+ * Converts first character of `str` to uppercase
+ * @param str {String}
+ * @returns String
+ */
 function toFirstUpper(str) {
   return str.charAt(0).toUpperCase() + str.substr(1);
 }
-function prefixNodeName(str) {
-  if (str === 'Svg') {
-    return str;
-  }
-  return `Svg.${str}`;
-}
-function toScopedIdentifier(name) {
+
+/**
+ * Converts `circle` to `Circle` if it is a known type
+ * @param name {String}
+ * @returns String
+ */
+function toMemberIdentifier(name) {
   // const knownTypes = Object.keys(Svg)
     // .filter(n => n.charAt(0) !== n.charAt(0).toLowerCase());
   const lname = name.toLowerCase();
   const cname = toFirstUpper(lname);
   if (knownTypes.includes(cname)) {
-    return prefixNodeName(cname);
+    return cname;
   }
-  return null;
+  return lname;
 }
 
+/**
+ * Converts `<circle>` to `<Svg.Circle>` member expressions
+ */
 export default t => ({
-  // converts
-  // <circle>
-  // to
-  // <Svg.Circle>
   JSXOpeningElement(path) {
-    const scopedIdentifier = toScopedIdentifier(path.node.name.name);
+    const memberIdentifier = toMemberIdentifier(path.node.name.name);
     // console.log('"%s" => "%s"', path.node.name.name, scopedIdentifier);
-    if (scopedIdentifier) {
-      path.node.name = t.jSXIdentifier(scopedIdentifier);
+    if (memberIdentifier === 'Svg') {
+      path.node.name = t.jSXIdentifier(memberIdentifier);
+    } else {
+      path.node.name = t.jSXMemberExpression(t.jSXIdentifier('Svg'), t.jSXIdentifier(memberIdentifier));
     }
   },
 });
