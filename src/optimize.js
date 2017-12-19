@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 // validates svgo opts
 // to contain minimal set of plugins that will strip some stuff
 // for the babylon JSX parser to work
