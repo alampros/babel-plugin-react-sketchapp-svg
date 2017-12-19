@@ -45,7 +45,7 @@ export default ({ types: t }) => ({
     },
     ImportDeclaration(path, state) {
       const importPath = path.node.source.value;
-      const { ignorePattern, caseSensitive } = state.opts;
+      const { ignorePattern, caseSensitive, defaultWidth, defaultHeight } = state.opts;
       const { file } = state;
       if (ignorePattern) {
         // Only set the ignoreRegex once:
@@ -73,10 +73,10 @@ export default ({ types: t }) => ({
 
         const parsedSvgAst = parse(escapeSvgSource, {
           sourceType: 'module',
-          plugins: ['jsx', 'dynamicImport', 'objectRestSpread'],
+          plugins: ['jsx'],
         });
 
-        traverse(parsedSvgAst, transformSvg(t));
+        traverse(parsedSvgAst, transformSvg(t, path, state));
 
         const svgCode = traverse.removeProperties(parsedSvgAst.program.body[0].expression);
 
@@ -88,7 +88,10 @@ export default ({ types: t }) => ({
         // Move props off of element and into defaultProps
         if (svgCode.openingElement.attributes.length > 1) {
           const keepProps = [];
-          const defaultProps = [];
+          const defaultProps = [
+            t.objectProperty(t.identifier('width'), t.numericLiteral(defaultWidth || 16)),
+            t.objectProperty(t.identifier('height'), t.numericLiteral(defaultHeight || 16)),
+          ];
 
           svgCode.openingElement.attributes.forEach((prop) => {
             if (prop.type === 'JSXSpreadAttribute') {

@@ -1,4 +1,7 @@
 {
  "extends": "airbnb",
- "root": true
+ "root": true,
+ "rules": {
+   "no-console": ["error", { "allow": ["warn", "error"] }]
+ }
 }

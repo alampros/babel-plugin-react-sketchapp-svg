@@ -1,4 +1,6 @@
 /* eslint-disable no-param-reassign */
+import { dirname } from 'path';
+import resolveFrom from 'resolve-from';
 //
 // These visitors normalize the SVG into the primitives from react-sketchapp:
 //
@@ -51,17 +53,24 @@ function toMemberIdentifier(name) {
   if (knownTypes.includes(cname)) {
     return cname;
   }
-  return lname;
+  // Unknown node
+  return null;
 }
 
 /**
  * Converts `<circle>` to `<Svg.Circle>` member expressions
  */
-export default t => ({
+export default (t, ancestor, state) => ({
   JSXOpeningElement(path) {
     const memberIdentifier = toMemberIdentifier(path.node.name.name);
-    // console.log('"%s" => "%s"', path.node.name.name, scopedIdentifier);
-    if (memberIdentifier === 'Svg') {
+    // console.log('"%s" => "%s"', path.node.name.name, memberIdentifier);
+    if (!memberIdentifier) {
+      const importPath = ancestor.node.source.value;
+      const iconPath = state.file.opts.filename;
+      const svgPath = resolveFrom(dirname(iconPath), importPath);
+      console.warn('WARNING: Removing incompatible node "%s" in file "%s".', path.node.name.name, svgPath);
+      path.parentPath.remove();
+    } else if (memberIdentifier === 'Svg') {
       path.node.name = t.jSXIdentifier(memberIdentifier);
     } else {
       path.node.name = t.jSXMemberExpression(t.jSXIdentifier('Svg'), t.jSXIdentifier(memberIdentifier));

@@ -1,4 +1,5 @@
 import { transformFile } from 'babel-core';
+import highlight from 'highlight-es';
 
 function assertReactImport(result) {
   const match = result.code.match(/import React from 'react'/);
@@ -23,13 +24,16 @@ transformFile('test/fixtures/test.jsx', {
   babelrc: false,
   presets: ['react'],
   plugins: [
-    '../../src/index',
+    ['../../src/index', {
+      defaultWidth: 22,
+      defaultHeight: 32,
+    }],
   ],
 }, (err, result) => {
   if (err) throw err;
   assertReactImport(result);
   assertReactSketchappImport(result);
-  // console.log('test/fixtures/test.jsx', result.code);
+  console.log('test/fixtures/test.jsx\n\n%s\n\n', highlight(result.code));
 });
 
 transformFile('test/fixtures/test-no-react.jsx', {
@@ -66,7 +70,8 @@ transformFile('test/fixtures/test-case-sensitive.jsx', {
   ],
 }, (err) => {
   if (err && err.message.indexOf('match case') !== -1) {
-    // console.log('test/fixtures/test-case-sensitive.jsx', 'Test passed: Expected case sensitive error was thrown');
+    // console.log('test/fixtures/test-case-sensitive.jsx',
+    // 'Test passed: Expected case sensitive error was thrown');
   } else {
     throw new Error("Test failed: Expected case sensitive error wasn't thrown");
   }
