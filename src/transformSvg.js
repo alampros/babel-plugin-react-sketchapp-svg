@@ -113,7 +113,9 @@ export default (t, ancestor, state) => ({
       const importPath = ancestor.node.source.value;
       const iconPath = state.file.opts.filename;
       const svgPath = resolveFrom(dirname(iconPath), importPath);
-      console.warn('WARNING: Removing incompatible node "%s" in file "%s".', path.node.name.name, svgPath);
+      if (state.opts.verbose) {
+        console.warn('WARNING: Removing incompatible node "%s" in file "%s".', path.node.name.name, svgPath);
+      }
       path.parentPath.remove();
     } else if (memberIdentifier === 'Svg') {
       path.node.name = t.jSXIdentifier(memberIdentifier);
