@@ -128,6 +128,8 @@ export default ({ types: t }) => ({
         }
         file.get('ensureReact')();
         file.get('ensureReactSketchapp')();
+        file.set('ensureReact', () => {});
+        file.set('ensureReactSketchapp', () => {});
       }
     },
   },
